@@ -26,11 +26,13 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    axios
-      .get("https://social-network.samuraijs.com/api/1.0/users")
-      .then((response) => {
-        this.setUsers(response.data.items);
-      });
+    axios.get("https://jsonplaceholder.typicode.com/users").then((response) => {
+      this.setUsers(
+        response.data.map((item) => {
+          return { ...item, followed: false };
+        })
+      );
+    });
   }
 
   render() {
@@ -40,10 +42,7 @@ class App extends React.Component {
           <div key={u.id}>
             <span>
               <div>
-                <img
-                  src={u.photos.small != null ? u.photos.small : this.userPhoto}
-                  alt="Error"
-                />
+                <img src={this.userPhoto} alt="Error" />
               </div>
               <div>
                 {u.followed ? (
@@ -66,6 +65,8 @@ class App extends React.Component {
               </div>
             </span>
             <span>
+              {u.username}
+              <br />
               {u.name}
             </span>
           </div>
@@ -76,6 +77,7 @@ class App extends React.Component {
 
   setUsers(users) {
     this.setState({ users: users });
+    console.log(this.state.users);
   }
 
   unfollow(id) {
